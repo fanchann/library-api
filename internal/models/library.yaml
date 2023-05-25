@@ -1,0 +1,316 @@
+openapi: "3.0.9"
+info:
+  title: Library Api
+  version: "1.0"
+
+servers:
+  - url: https://192.168.85.1:3000/libraries/
+    description: library api
+    variables:
+      environments:
+        default: dev
+        description: list api server
+        enum:
+          - dev
+          - prod
+          - test
+
+paths:
+  /libraries/books:
+    get:
+      summary: get all books
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success get all books
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        book_title:
+                          type: string
+                          example: one piece
+                        author_name:
+                          type: string
+                          example: eichiro oda
+
+  /libraries/book/:id:
+    get:
+      summary: get book by id
+      parameters:
+        - name: id
+          in: query
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success get book
+                  data:
+                    type: object
+                    properties:
+                      book_title:
+                        type: string
+                        example: attack on titan
+                      author:
+                        type: string
+                        example: fanchann
+        400:
+          description: Fail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: book not found
+                  data:
+                    type: object
+                    example: {}
+
+  /libraries/authors:
+    get:
+      summary: get authors
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success get all author
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        author:
+                          type: string
+                          example: fanchann
+                        books:
+                          type: array
+                          example:
+                            - attack on titan
+                            - kanojo no kanojo
+                            - gamers
+
+  /libraries/author/:id:
+    get:
+      summary: get author by id
+      parameters:
+        - name: string
+          in: query
+      responses:
+        200:
+          description: success get author by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success get author
+                  data:
+                    type: object
+                    properties:
+                      author:
+                        type: string
+                        example: fanchann
+                      books:
+                        type: array
+                        example:
+                          - one piece
+                          - attack on titan
+                          - kanojo no kanojo
+        400:
+          description: Fail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: author not found
+                  data:
+                    type: object
+                    example: {}
+
+  /libraries/books/new:
+    post:
+      summary: add new book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                book_title:
+                  type: string
+                  example: one piece
+                author_name:
+                  type: string
+                  example: fanchann
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success add new book
+                  data:
+                    type: object
+                    properties:
+                      book:
+                        type: string
+                        example: one piece
+                      author:
+                        type: string
+                        example: fanchann
+        400:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: failed add new book
+                  data:
+                    type: string
+                    example: {}
+
+  /libraries/books/:bookID:
+    put:
+      summary: edit book
+      parameters:
+        - name: id
+          in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                book_title:
+                  type: string
+                  example: one piece
+                author:
+                  type: string
+                  example: eichiro oda
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success update book
+                  data:
+                    type: object
+                    properties:
+                      book:
+                        type: string
+                        example: one piece
+                      author:
+                        type: string
+                        example: eichiro oda
+        400:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: failed update book
+                  data:
+                    type: string
+                    example: {}
+
+  /libraries/books/:BookID:
+    delete:
+      parameters:
+        - name: bookID
+          in: query
+      responses:
+        200:
+          description: while success delete book
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success delete book
+                  data:
+                    type: object
+                    example: null
+        400:
+          description: book not found ?
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: failed delete book, book not found
+                  data:
+                    type: string
+                    example: null

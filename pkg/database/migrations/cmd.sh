@@ -1,0 +1,1 @@
+migrate -database 'mysql://root:root@tcp(127.0.0.1:3307)/library_api' -path /pkg/database/migrations up

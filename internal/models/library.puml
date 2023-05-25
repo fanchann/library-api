@@ -1,0 +1,31 @@
+@startuml Library
+
+entity Books{
+    *book_id : int (PK,FK)
+    --
+    *book_title : varchar(100)
+    --
+    *inserted_at : date
+    --
+    *updated_at : date
+}
+
+entity Books_Information{
+    *book_id : int (FK)
+    --
+    *author_id : int (FK)
+}
+
+entity Author{
+    *author_id : int (PK,FK)
+    --
+    *author_name : varchar(200)
+    --
+    *inserted_at : date
+    --
+    *updated_at : date
+}
+
+Author }|-- Books_Information 
+Books }|-- Books_Information
+@enduml
