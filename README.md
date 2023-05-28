@@ -17,8 +17,8 @@ export DB_PORT=<database port>
 export DB_DRIVER=mysql
 export DB_AUTH_USERNAME=root
 export DB_AUTH_PASSWORD=root
-export DB_NAME=local_production
+export DB_NAME=library_api
 export DB_URL=127.0.0.1
-export DB_PORT=3306
+export DB_PORT=3307
 ```
 happy coding with MySQL and Go!

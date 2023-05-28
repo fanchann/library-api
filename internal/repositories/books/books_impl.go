@@ -18,7 +18,7 @@ func NewBooksRepoImpl() IBooksRepositories {
 
 func (book *BooksRepoImpl) Add(ctx context.Context, tx *sql.Tx, bookData *domain.Books) domain.Books {
 	insertQuery := `insert into books(book_title) values (?)`
-	id, err := tx.ExecContext(ctx, insertQuery, bookData.Book_title)
+	id, err := tx.ExecContext(ctx, insertQuery, bookData.Book_Title)
 	utils.LogErrorWithPanic(err)
 	intId, _ := id.LastInsertId()
 	bookData.Book_id = int(intId)
@@ -27,7 +27,7 @@ func (book *BooksRepoImpl) Add(ctx context.Context, tx *sql.Tx, bookData *domain
 
 func (book *BooksRepoImpl) Update(ctx context.Context, tx *sql.Tx, bookData *domain.Books) domain.Books {
 	updateQuery := `update books set book_title = ? where id = ?`
-	id, err := tx.ExecContext(ctx, updateQuery, bookData.Book_title, bookData.Book_id)
+	id, err := tx.ExecContext(ctx, updateQuery, bookData.Book_Title, bookData.Book_id)
 	utils.LogErrorWithPanic(err)
 	intId, _ := id.LastInsertId()
 	bookData.Book_id = int(intId)
@@ -43,7 +43,7 @@ func (book *BooksRepoImpl) FindById(ctx context.Context, tx *sql.Tx, bookID int)
 
 	domainBook := domain.Books{}
 	if row.Next() {
-		row.Scan(&domainBook.Book_id, &domainBook.Book_title)
+		row.Scan(&domainBook.Book_id, &domainBook.Book_Title)
 		return domainBook, nil
 
 	}
@@ -60,7 +60,7 @@ func (book *BooksRepoImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.Boo
 	defer rows.Close()
 	for rows.Next() {
 		book := domain.Books{}
-		rows.Scan(&book.Book_id, &book.Book_title)
+		rows.Scan(&book.Book_id, &book.Book_Title)
 		books = append(books, book)
 	}
 	return books
@@ -68,7 +68,7 @@ func (book *BooksRepoImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.Boo
 }
 
 func (book *BooksRepoImpl) Delete(ctx context.Context, tx *sql.Tx, bookID int) {
-	deleteQuery := `delete from books where books = ?`
+	deleteQuery := `delete from books where book_id = ?`
 	_, err := tx.ExecContext(ctx, deleteQuery, bookID)
 	utils.LogErrorWithPanic(err)
 }

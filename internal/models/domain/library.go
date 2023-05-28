@@ -10,7 +10,7 @@ type (
 
 	Books struct {
 		Book_id     int
-		Book_title  string
+		Book_Title  string
 		Inserted_At string
 		Updated_At  string
 	}
@@ -18,5 +18,14 @@ type (
 	Books_Information struct {
 		Book_id   int
 		Author_id int
+	}
+
+	BookLists struct {
+		Book_Title string
+	}
+
+	BookWithAuthor struct {
+		Author_Name string
+		Book_Title  string
 	}
 )

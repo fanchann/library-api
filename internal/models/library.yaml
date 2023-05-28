@@ -4,7 +4,7 @@ info:
   version: "1.0"
 
 servers:
-  - url: https://192.168.85.1:3000/libraries/
+  - url: https://localhost:3000/libraries/
     description: library api
     variables:
       environments:

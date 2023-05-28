@@ -8,8 +8,8 @@ type (
 	}
 
 	AuthorsResponse struct {
-		Author string      `json:"author"`
-		Books  interface{} `json:"books"`
+		Author string   `json:"author"`
+		Books  []string `json:"books"`
 	}
 
 	BooksResponse struct {

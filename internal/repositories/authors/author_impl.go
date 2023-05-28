@@ -36,8 +36,9 @@ func (author *AuthorRepoImpl) Update(ctx context.Context, tx *sql.Tx, authorData
 
 func (author *AuthorRepoImpl) FindAuthorById(ctx context.Context, tx *sql.Tx, authorId int) (domain.Author, error) {
 	findByIdQuery := `select author_id,author_name from authors where author_id = ?`
-	rows, err := tx.QueryContext(ctx, findByIdQuery)
+	rows, err := tx.QueryContext(ctx, findByIdQuery, authorId)
 	utils.LogErrorWithPanic(err)
+	defer rows.Close()
 
 	if rows.Next() {
 		author := domain.Author{}
@@ -63,4 +64,19 @@ func (author *AuthorRepoImpl) FindAllAuthor(ctx context.Context, tx *sql.Tx) []d
 		authors = append(authors, author)
 	}
 	return authors
+}
+
+func (author *AuthorRepoImpl) FindAuthorByName(ctx context.Context, tx *sql.Tx, name string) error {
+	findNameQuery := `select author_name from authors where author_name like '%?%' limit 1;`
+	row, err := tx.QueryContext(ctx, findNameQuery, name)
+	utils.LogErrorWithPanic(err)
+	defer row.Close()
+
+	data := domain.Author{}
+	if row.Next() {
+		err := row.Scan(&data.Author_Name)
+		utils.LogErrorWithPanic(err)
+		return nil
+	}
+	return err
 }
