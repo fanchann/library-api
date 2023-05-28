@@ -2,12 +2,12 @@ package database
 
 import (
 	"database/sql"
-
-	"fanchann/library/pkg/environments"
 	"fmt"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+
+	"fanchann/library/pkg/environments"
 )
 
 func MysqlConnect() (*sql.DB, error) {

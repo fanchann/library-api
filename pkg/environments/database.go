@@ -1,6 +1,12 @@
 package environments
 
-import "os"
+import (
+	"os"
+
+	"github.com/joho/godotenv"
+
+	"fanchann/library/pkg/utils"
+)
 
 var (
 	Driver   = os.Getenv("DB_DRIVER")
@@ -10,3 +16,10 @@ var (
 	Db_url   = os.Getenv("DB_URL")
 	Db_port  = os.Getenv("DB_PORT")
 )
+
+func LoadEnv() {
+	errReadEnvFile := godotenv.Load()
+	if errReadEnvFile != nil {
+		utils.LogErrorWithPanic(errReadEnvFile)
+	}
+}
