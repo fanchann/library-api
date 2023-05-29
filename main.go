@@ -33,6 +33,8 @@ func main() {
 	router.GET("/libraries/book/:id", controller.FindBookById)
 	router.GET("/libraries/authors", controller.FindAuthorById)
 	router.GET("/libraries/author/:id", controller.FindAuthorById)
+	router.GET("/libraries/author/search", controller.FindAuthorByName)
+
 	router.POST("/libraries/books/new", controller.AddNewBook)
 	router.PUT("/libraries/books/:id", controller.UpdateBook)
 	router.DELETE("/libraries/books/:id", controller.DeleteBook)

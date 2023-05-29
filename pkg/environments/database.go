@@ -18,8 +18,6 @@ var (
 )
 
 func LoadEnv() {
-	errReadEnvFile := godotenv.Load()
-	if errReadEnvFile != nil {
-		utils.LogErrorWithPanic(errReadEnvFile)
-	}
+	errEnv := godotenv.Load("./pkg/environments/.env")
+	utils.LogErrorWithPanic(errEnv)
 }

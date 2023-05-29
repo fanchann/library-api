@@ -16,7 +16,7 @@ func NewBooksInfoRepoImpl() IBooksInformation {
 }
 
 func (bookInfo *BooksInfoRepoImpl) Insert(ctx context.Context, tx *sql.Tx, dataBooks *domain.Books_Information) domain.Books_Information {
-	addQuery := `insert into books_information(book_id,author_id) values(?,?)`
+	addQuery := `insert into books_information(book_id,author_id) values (?,?)`
 	_, err := tx.ExecContext(ctx, addQuery, dataBooks.Book_id, dataBooks.Author_id)
 	utils.LogErrorWithPanic(err)
 	return *dataBooks

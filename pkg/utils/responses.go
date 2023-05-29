@@ -1,7 +1,12 @@
 package utils
 
-import "fanchann/library/internal/models/web"
+import (
+	"net/http"
 
-func WebResponses(status int, message string, data interface{}) web.WebResponse {
+	"fanchann/library/internal/models/web"
+)
+
+func WebResponses(writer http.ResponseWriter,status int, message string, data interface{}) web.WebResponse {
+	writer.WriteHeader(status)
 	return web.WebResponse{Status: status, Message: message, Data: data}
 }

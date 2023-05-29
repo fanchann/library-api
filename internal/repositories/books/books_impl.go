@@ -26,7 +26,7 @@ func (book *BooksRepoImpl) Add(ctx context.Context, tx *sql.Tx, bookData *domain
 }
 
 func (book *BooksRepoImpl) Update(ctx context.Context, tx *sql.Tx, bookData *domain.Books) domain.Books {
-	updateQuery := `update books set book_title = ? where id = ?`
+	updateQuery := `update books set book_title = ? where book_id = ?`
 	id, err := tx.ExecContext(ctx, updateQuery, bookData.Book_Title, bookData.Book_id)
 	utils.LogErrorWithPanic(err)
 	intId, _ := id.LastInsertId()

@@ -11,6 +11,8 @@ import (
 )
 
 func MysqlConnect() (*sql.DB, error) {
+	environments.LoadEnv()
+
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", environments.Username, environments.Password, environments.Db_url, environments.Db_port, environments.Db_name)
 	db, err := sql.Open(environments.Driver, dataSource)
 	if err != nil {

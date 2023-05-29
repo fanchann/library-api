@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"fanchann/library/internal/models/domain"
@@ -40,28 +41,27 @@ func (lib *LibraryImpl) UpdateBook(ctx context.Context, formData web.UpdateBook)
 	tx, err := lib.DB.Begin()
 	utils.LogErrorWithPanic(err)
 	defer utils.TransactionsCommitOrRollback(tx)
+	fmt.Println(formData)
 
-	bookData, errBookNotFound := lib.BookRepo.FindById(ctx, tx, formData.Book_id)
-	errAuthorNotFound := lib.AuthorRepo.FindAuthorByName(ctx, tx, formData.Author)
-
+	dataBook, errBookNotFound := lib.BookRepo.FindById(ctx, tx, formData.Book_id)
 	if errBookNotFound != nil {
 		return web.UpdateBook{}, errBookNotFound
 
 	}
-	var domainBook domain.Books
-	if bookData.Book_Title != "" {
-		var authorData domain.Author
-		fmt.Println(domainBook)
-		fmt.Println(authorData)
-		if errAuthorNotFound != nil {
-			authorData = lib.AuthorRepo.Add(ctx, tx, utils.UpdateAuthorToDomainBook(&formData))
-		}
-		lib.BookInfoRepo.Delete(ctx, tx, formData.Book_id)
-		domainBook = lib.BookRepo.Update(ctx, tx, utils.UpdateBookToDomainBook(&formData))
-		lib.BookInfoRepo.Insert(ctx, tx, &domain.Books_Information{Book_id: formData.Book_id, Author_id: authorData.Author_Id})
 
+	authorFound := lib.AuthorRepo.FindAuthorByName(ctx, tx, formData.Author)
+
+	fmt.Println("author -> ", authorFound)
+	nullAuthor := domain.Author{}
+	if authorFound == nullAuthor {
+		authorData := lib.AuthorRepo.Add(ctx, tx, utils.UpdateAuthorToDomainBook(&formData))
+		lib.BookInfoRepo.Delete(ctx, tx, dataBook.Book_id)
+		lib.BookInfoRepo.Insert(ctx, tx, &domain.Books_Information{Book_id: formData.Book_id, Author_id: authorData.Author_Id})
+		domainBook := lib.BookRepo.Update(ctx, tx, utils.UpdateBookToDomainBook(&formData))
+
+		return web.UpdateBook{Book_id: domainBook.Book_id, Book_Title: domainBook.Book_Title, Author: formData.Author}, nil
 	}
-	return web.UpdateBook{Book_id: domainBook.Book_id, Book_Title: domainBook.Book_Title, Author: formData.Author}, nil
+	return web.UpdateBook{}, errors.New("failed edit data")
 }
 
 func (lib *LibraryImpl) DeleteBook(ctx context.Context, bookID int) error {
@@ -126,4 +126,23 @@ func (lib *LibraryImpl) FindAllBook(ctx context.Context) []web.BooksResponse {
 		booksResponses = append(booksResponses, bookAndAuthor)
 	}
 	return booksResponses
+}
+
+func (lib *LibraryImpl) FindByNameAuthor(ctx context.Context, authorName string) (web.AuthorsResponse, error) {
+	tx, err := lib.DB.Begin()
+	utils.LogErrorWithPanic(err)
+	defer utils.TransactionsCommitOrRollback(tx)
+
+	nullAuthor := domain.Author{}
+
+	authorData := lib.AuthorRepo.FindAuthorByName(ctx, tx, authorName)
+	if authorData == nullAuthor {
+		return web.AuthorsResponse{}, errors.New("gaono su")
+	}
+	booksWithAuthor := lib.BookInfoRepo.FindAuthorIdWithBooks(ctx, tx, authorData.Author_Id)
+	books := []string{}
+	for _, i := range booksWithAuthor {
+		books = append(books, i.Book_Title)
+	}
+	return web.AuthorsResponse{Author: authorData.Author_Name, Books: books}, nil
 }

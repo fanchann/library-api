@@ -66,17 +66,17 @@ func (author *AuthorRepoImpl) FindAllAuthor(ctx context.Context, tx *sql.Tx) []d
 	return authors
 }
 
-func (author *AuthorRepoImpl) FindAuthorByName(ctx context.Context, tx *sql.Tx, name string) error {
-	findNameQuery := `select author_name from authors where author_name like '%?%' limit 1;`
+func (author *AuthorRepoImpl) FindAuthorByName(ctx context.Context, tx *sql.Tx, name string) domain.Author {
+	findNameQuery := `select author_id,author_name from authors where author_name = ?`
 	row, err := tx.QueryContext(ctx, findNameQuery, name)
 	utils.LogErrorWithPanic(err)
 	defer row.Close()
 
 	data := domain.Author{}
 	if row.Next() {
-		err := row.Scan(&data.Author_Name)
-		utils.LogErrorWithPanic(err)
-		return nil
+		errScan := row.Scan(&data.Author_Id, &data.Author_Name)
+		utils.LogErrorWithPanic(errScan)
+		return data
 	}
-	return err
+	return domain.Author{}
 }
