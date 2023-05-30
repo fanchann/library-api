@@ -44,12 +44,12 @@ paths:
                           type: string
                           example: eichiro oda
 
-  /libraries/book/:id:
+  /libraries/book/3:
     get:
       summary: get book by id
       parameters:
         - name: id
-          in: query
+          in: path
       responses:
         200:
           description: OK
@@ -121,12 +121,12 @@ paths:
                             - kanojo no kanojo
                             - gamers
 
-  /libraries/author/:id:
+  /libraries/author/3:
     get:
       summary: get author by id
       parameters:
         - name: string
-          in: query
+          in: path
       responses:
         200:
           description: success get author by id
@@ -170,12 +170,13 @@ paths:
                     type: object
                     example: {}
 
-  /libraries/author/search?author={author name}:
+  /libraries/author/search?author=fanchann:
     get:
       summary: "get author by name"
       parameters:
         - name: author_name
           in: query
+          required: true
       responses:
         200:
           description: success get author by id
@@ -219,7 +220,7 @@ paths:
                     type: object
                     example: {}
 
-  /libraries/books/new:
+  /libraries/book/new:
     post:
       summary: add new book
       requestBody:
@@ -272,12 +273,13 @@ paths:
                     type: string
                     example: {}
 
-  /libraries/book/:bookID:
+  /libraries/book/4:
     put:
       summary: edit book
       parameters:
         - name: id
-          in: query
+          in: path
+          required: true
       requestBody:
         content:
           application/json:
@@ -327,11 +329,12 @@ paths:
                     type: string
                     example: {}
 
-  /libraries/book/:BookID:
+  /libraries/book/100:
     delete:
       parameters:
         - name: bookID
-          in: query
+          in: path
+          required: true
       responses:
         200:
           description: while success delete book

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"fanchann/library/interface/controller"
+	"fanchann/library/interface/middleware"
 	"fanchann/library/internal/repositories/authors"
 	"fanchann/library/internal/repositories/books"
 	booksinformation "fanchann/library/internal/repositories/books_information"
@@ -15,7 +16,6 @@ import (
 func main() {
 	db, err := database.MysqlConnect()
 	utils.LogErrorWithPanic(err)
-	err = db.Ping()
 	utils.LogErrorWithPanic(err)
 
 	bookRepo := books.NewBooksRepoImpl()
@@ -24,20 +24,33 @@ func main() {
 	services := services.NewLibraryImpl(db, authorRepo, bookRepo, bookInfosRepo)
 	controller := controller.NewLibraryControllerImpl(services)
 
-	// //success
-	// fmt.Println("Success connected to database")
-
 	router := gin.Default()
+	router.Use(middleware.LibraryMiddleware())
 
-	router.GET("/libraries/books", controller.FindAllBook)
-	router.GET("/libraries/book/:id", controller.FindBookById)
-	router.GET("/libraries/authors", controller.FindAuthorById)
-	router.GET("/libraries/author/:id", controller.FindAuthorById)
-	router.GET("/libraries/author/search", controller.FindAuthorByName)
+	//Grouping
+	group := router.Group("/libraries/")
 
-	router.POST("/libraries/books/new", controller.AddNewBook)
-	router.PUT("/libraries/books/:id", controller.UpdateBook)
-	router.DELETE("/libraries/books/:id", controller.DeleteBook)
+	//For Author
+	groupAuthor := group.Group("author/")
+	//GET
+	groupAuthor.GET(":id", controller.FindAuthorById)
+	groupAuthor.GET("search", controller.FindAuthorByName)
+
+	//For Book
+	groupBook := group.Group("book/")
+	//GET
+	groupBook.GET(":id", controller.FindBookById)
+	//POST
+	groupBook.POST("new", controller.AddNewBook)
+	//PUT
+	groupBook.PUT(":id", controller.UpdateBook)
+	//DELETE
+	groupBook.DELETE(":id", controller.DeleteBook)
+
+	//Get All Books And Authors
+	//GET
+	group.GET("books", controller.FindAllBook)
+	group.GET("authors", controller.FindAllAuthorWithTheBook)
 
 	router.Run("localhost:3000")
 }

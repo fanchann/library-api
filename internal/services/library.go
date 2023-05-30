@@ -14,4 +14,5 @@ type ILibraryServices interface {
 	FindByIdAuthor(ctx context.Context, authorID int) (web.AuthorsResponse, error)
 	FindAllBook(ctx context.Context) []web.BooksResponse
 	FindByNameAuthor(ctx context.Context, authorName string) (web.AuthorsResponse, error)
+	GetAllAuthor(ctx context.Context) []web.AuthorsResponse
 }

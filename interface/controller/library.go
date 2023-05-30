@@ -10,4 +10,5 @@ type ILibraryController interface {
 	FindAuthorById(c *gin.Context)
 	FindAllBook(c *gin.Context)
 	FindAuthorByName(c *gin.Context)
+	FindAllAuthorWithTheBook(c *gin.Context)
 }
