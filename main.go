@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"github.com/gin-gonic/gin"
 
 	"fanchann/library/interface/controller"
@@ -12,12 +10,8 @@ import (
 	booksinformation "fanchann/library/internal/repositories/books_information"
 	"fanchann/library/internal/services"
 	"fanchann/library/pkg/database"
+	"fanchann/library/pkg/environments"
 	"fanchann/library/pkg/utils"
-)
-
-var (
-	APP_PORT = os.Getenv("APP_PORT")
-	APP_URL  = os.Getenv("APP_URL")
 )
 
 func main() {
@@ -59,5 +53,5 @@ func main() {
 	group.GET("books", controller.FindAllBook)
 	group.GET("authors", controller.FindAllAuthorWithTheBook)
 
-	router.Run(APP_URL + ":" + APP_PORT)
+	router.Run(environments.APP_URL + ":" + environments.APP_PORT)
 }
