@@ -10,7 +10,6 @@ import (
 
 var (
 	APP_PORT string
-	APP_URL  string
 
 	Driver   string
 	Username string
@@ -25,7 +24,6 @@ func LoadEnv() {
 	utils.LogErrorWithPanic(errEnv)
 
 	APP_PORT = os.Getenv("APP_PORT")
-	APP_URL = os.Getenv("APP_URL")
 
 	Driver = os.Getenv("DB_DRIVER")
 	Username = os.Getenv("DB_AUTH_USERNAME")

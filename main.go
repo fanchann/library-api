@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 
 	"fanchann/library/interface/controller"
@@ -18,6 +20,10 @@ func main() {
 	db, err := database.MysqlConnect()
 	utils.LogErrorWithPanic(err)
 	utils.LogErrorWithPanic(err)
+	if errPing := db.Ping(); errPing != nil {
+		panic(errPing)
+	}
+	fmt.Println("connected to database")
 
 	bookRepo := books.NewBooksRepoImpl()
 	bookInfosRepo := booksinformation.NewBooksInfoRepoImpl()
@@ -26,6 +32,7 @@ func main() {
 	controller := controller.NewLibraryControllerImpl(services)
 
 	router := gin.Default()
+
 	router.Use(middleware.LibraryMiddleware())
 
 	//Grouping
@@ -53,5 +60,5 @@ func main() {
 	group.GET("books", controller.FindAllBook)
 	group.GET("authors", controller.FindAllAuthorWithTheBook)
 
-	router.Run(environments.APP_URL + ":" + environments.APP_PORT)
+	router.Run(":" + environments.APP_PORT)
 }

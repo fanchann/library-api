@@ -3,22 +3,19 @@ services:
   lib_api:
     container_name: lib_api
     image: lib_api:latest
+
     build:
       context: .
       dockerfile: Dockerfile
+
     ports:
-      - 7000:6000
-    environment:
-      APP_URL: localhost
-      APP_PORT: 6000
-      DB_DRIVER: mysql
-      DB_AUTH_USERNAME: root
-      DB_AUTH_PASSWORD: root
-      DB_NAME: library_api
-      DB_URL: 0.0.0.0
-      DB_PORT: 3307
+      - published: 7000
+        target: 9000
     depends_on:
       - mysql_db
+    restart: always
+    networks:
+      - lib_api_network
 
   mysql_db:
     container_name: mysql_db
@@ -28,7 +25,13 @@ services:
     ports:
       - 3307:3306
     restart: always
+    networks:
+      - lib_api_network
 
 networks:
   lib_api_network:
     name: lib_api_network
+
+volumes:
+  lib_api:
+    name: lib_api
