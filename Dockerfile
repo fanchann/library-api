@@ -1,0 +1,40 @@
+FROM golang:1.20 AS builder
+
+ENV APP_URL=127.0.0.1
+ENV APP_PORT=3000
+ENV DB_DRIVER=mysql
+ENV DB_AUTH_USERNAME=root
+ENV DB_AUTH_PASSWORD=root
+ENV DB_NAME=library_api
+ENV DB_URL=127.0.0.1
+ENV DB_PORT=3306
+
+WORKDIR /library_api
+COPY . /library_api/
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux go build -o /library_api/library_app /library_api/main.go
+
+
+FROM alpine:latest
+
+ENV APP_URL=${APP_URL}
+ENV APP_PORT=${APP_PORT}
+ENV DB_DRIVER=${DB_DRIVER}
+ENV DB_AUTH_USERNAME=${DB_AUTH_USERNAME} 
+ENV DB_AUTH_PASSWORD=${DB_AUTH_PASSWORD} 
+ENV DB_NAME=${DB_NAME} 
+ENV DB_URL=${DB_URL}
+ENV DB_PORT=${DB_PORT}
+
+EXPOSE ${APP_URL}
+EXPOSE ${APP_PORT}
+EXPOSE ${DB_DRIVER}
+EXPOSE ${DB_AUTH_USERNAME} 
+EXPOSE ${DB_AUTH_PASSWORD} 
+EXPOSE ${DB_NAME} 
+EXPOSE ${DB_URL}
+EXPOSE ${DB_PORT} 
+
+WORKDIR /library_api
+COPY --from=builder /library_api .
+ENTRYPOINT [ "/library_api/library_app" ]
