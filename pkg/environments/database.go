@@ -18,7 +18,7 @@ var (
 )
 
 func LoadEnv() {
-	errEnv := godotenv.Load("./pkg/environments/.env")
+	errEnv := godotenv.Load("env")
 	utils.LogErrorWithPanic(errEnv)
 
 	Driver = os.Getenv("DB_DRIVER")
